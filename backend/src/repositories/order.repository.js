@@ -43,7 +43,7 @@ export const orderRepository = {
     const ids = [...new Set(items.map(item => item.productId))]
     const slugs = [...new Set(items.map(item => item.productSlug).filter(Boolean))]
     const { rows } = await query(
-      `SELECT p.id AS product_id, p.slug, p.name, b.name AS brand, pv.id AS variant_id, pv.color_name, pv.quantity AS quantity_value, pv.unit, pv.selling_price, pv.stock
+      `SELECT p.id AS product_id, p.slug, p.name, b.name AS brand, pv.id AS variant_id, pv.color_name, pv.quantity AS quantity_value, pv.unit, pv.selling_price AS sell_price, pv.stock
        FROM products p
        JOIN brands b ON b.id=p.brand_id
        JOIN product_variants pv ON pv.product_id=p.id AND pv.id = ANY($2::uuid[]) AND pv.deleted_at IS NULL AND pv.is_active=true
@@ -54,7 +54,12 @@ export const orderRepository = {
       const product = rows.find(row => (row.product_id === item.productId || row.slug === item.productSlug) && row.variant_id === item.variantId)
       if (!product) throw Object.assign(new Error('A product in your cart is no longer available. Please remove it and try again.'), { statusCode: 400, code: 'CART_PRODUCT_UNAVAILABLE' })
       if (Number(product.stock) < item.quantity) throw Object.assign(new Error('Insufficient stock for the selected variant'), { statusCode: 400 })
-      return { ...product, quantity: item.quantity }
+      return {
+        ...product,
+        size: product.quantity_value ? `${product.quantity_value} ${product.unit}` : '',
+        color: product.color_name || '',
+        quantity: item.quantity
+      }
     })
   },
 
