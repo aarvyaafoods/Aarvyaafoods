@@ -95,8 +95,12 @@ export const orderRepository = {
             'state', a.state,
             'pincode', a.pincode
           ) END
-        ) AS "shippingAddress"
+        ) AS "shippingAddress",
+        u.name AS "customerName",
+        u.email AS "customerEmail",
+        u.phone AS "customerPhone"
        FROM orders
+       LEFT JOIN users u ON u.id=orders.user_id
        LEFT JOIN user_addresses a ON a.id=orders.address_id
        WHERE orders.id=$1 AND orders.user_id=$2 AND orders.deleted_at IS NULL`,
       [id, userId]

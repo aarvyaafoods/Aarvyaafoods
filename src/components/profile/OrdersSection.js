@@ -141,9 +141,12 @@ export default function OrdersSection() {
               </div>
 
               <div className="bg-surface-alt rounded-xl p-4 mb-5">
-                <div className="flex justify-between text-[13px] text-ink-muted mb-2"><span>Subtotal</span><span>{formatPrice(sel.total)}</span></div>
-                <div className="flex justify-between text-[13px] text-ink-muted mb-2"><span>Shipping</span><span className="text-green-600 font-medium">FREE</span></div>
-                <div className="flex justify-between text-[16px] font-bold text-ink pt-2.5 border-t border-line"><span>Total</span><span>{formatPrice(sel.total)}</span></div>
+                <div className="flex justify-between text-[13px] text-ink-muted mb-2"><span>Subtotal</span><span>{formatPrice(sel.subtotal ?? 0)}</span></div>
+                {Number(sel.discountAmount) > 0 && (
+                  <div className="flex justify-between text-[13px] text-ink-muted mb-2"><span>Discount</span><span className="text-red-600">-{formatPrice(sel.discountAmount)}</span></div>
+                )}
+                <div className="flex justify-between text-[13px] text-ink-muted mb-2"><span>Shipping</span><span className={Number(sel.shippingAmount) === 0 ? 'text-green-600 font-medium' : ''}>{Number(sel.shippingAmount) === 0 ? 'FREE' : formatPrice(sel.shippingAmount)}</span></div>
+                <div className="flex justify-between text-[16px] font-bold text-ink pt-2.5 border-t border-line"><span>Total</span><span>{formatPrice(sel.total ?? 0)}</span></div>
               </div>
 
               {sel.status!=='cancelled' && (

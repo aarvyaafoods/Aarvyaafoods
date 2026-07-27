@@ -44,6 +44,11 @@ export function buildInvoiceHtml(order, format = 'a4') {
   const thermal = format === 'thermal'
   const created = order.createdAt ? new Date(order.createdAt).toLocaleString('en-IN') : ''
   const addressLines = formatAddress(order.shippingAddress || {})
+  const billToLines = [
+    order.customerName || order.shippingAddress?.fullName || order.shippingAddress?.full_name,
+    order.customerEmail,
+    order.customerPhone
+  ].filter(Boolean)
   const pageCss = thermal
     ? `@page { size: 80mm auto; margin: 4mm; } body { width: 72mm; font-size: 10px; } .brand { font-size: 14px; } table { font-size: 9px; }`
     : `@page { size: A4; margin: 14mm; } body { max-width: 180mm; margin: 0 auto; font-size: 12px; } .brand { font-size: 24px; }`
@@ -82,9 +87,7 @@ export function buildInvoiceHtml(order, format = 'a4') {
   <div class="grid">
     <div class="box">
       <div class="label">Bill To</div>
-      <div>${escapeHtml(order.customerName)}</div>
-      <div class="muted">${escapeHtml(order.customerEmail)}</div>
-      <div class="muted">${escapeHtml(order.customerPhone || '')}</div>
+      ${billToLines.length > 0 ? billToLines.map(line => `<div>${escapeHtml(line)}</div>`).join('') : '<div class="muted">Customer information not available</div>'}
     </div>
     <div class="box">
       <div class="label">Ship To</div>
