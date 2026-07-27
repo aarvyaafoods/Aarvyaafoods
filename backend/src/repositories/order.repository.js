@@ -58,6 +58,7 @@ export const orderRepository = {
         ...product,
         size: product.quantity_value ? `${product.quantity_value} ${product.unit}` : '',
         color: product.color_name || '',
+        selling_price: product.sell_price,
         quantity: item.quantity
       }
     })
