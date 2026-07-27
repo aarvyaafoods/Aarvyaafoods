@@ -13,7 +13,7 @@ export const adminRepository = {
       query(`SELECT count(*)::int AS value FROM orders WHERE deleted_at IS NULL`).then(r => r.rows[0].value).catch(() => 0),
       query(`SELECT count(*)::int AS value FROM users u JOIN roles r ON r.id=u.role_id WHERE u.deleted_at IS NULL AND r.name='customer'`).then(r => r.rows[0].value).catch(() => 0),
       query(`SELECT count(*)::int AS value FROM products WHERE deleted_at IS NULL`).then(r => r.rows[0].value).catch(() => 0),
-      query(`SELECT COALESCE(sum(total),0)::numeric AS value FROM orders WHERE deleted_at IS NULL AND status IN ('paid','confirmed')`).then(r => r.rows[0].value).catch(() => 0),
+      query(`SELECT COALESCE(sum(NULLIF(total::text, 'NaN')::numeric),0)::numeric AS value FROM orders WHERE deleted_at IS NULL AND status IN ('paid','confirmed')`).then(r => r.rows[0].value).catch(() => 0),
       query(`SELECT count(*)::int AS value FROM newsletter_subscriptions WHERE deleted_at IS NULL`).then(r => r.rows[0].value).catch(() => 0),
     ])
     return { orders, customers, products, revenue, subscriptions }

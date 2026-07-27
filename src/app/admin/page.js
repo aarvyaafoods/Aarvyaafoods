@@ -14,7 +14,7 @@ import { downloadInvoice } from '@/lib/invoice'
 import { applyTheme, buildThemeFromPrimary, DEFAULT_THEME, normalizeTheme, THEME_PRESETS } from '@/lib/theme'
 import { computeDiscountPercent, formatPrice } from '@/lib/utils'
 
-const money = (value) => formatPrice(Number(value || 0))
+const money = (value) => formatPrice(Number.isFinite(Number(value)) ? Number(value) : 0)
 const emptyColorVariant = { name: '', hex: '#111111', images: [''], sizes: [{ size: '', stock: 0, mrp: 0, sellingPrice: 0 }] }
 const emptyProduct = {
   name: '', slug: '', category: 'women', brand: 'Aarvya', subcategory: 'general',
