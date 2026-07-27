@@ -1,0 +1,17 @@
+{
+  "buildCommand": "npm install",
+  "functions": {
+    "api/handler.js": {
+      "runtime": "@vercel/node@4.0.0"
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/handler.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
